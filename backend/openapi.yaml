@@ -1,0 +1,224 @@
+openapi: 3.0.3
+info:
+  title: VeloShop API
+  version: 1.0.0
+  description: REST API sklepu rowerowego VeloShop. Autoryzacja przez JWT (nagłówek `Authorization Bearer <token>`).
+servers:
+  - url: /api
+tags:
+  - name: Auth
+  - name: Katalog
+  - name: Zamówienia
+paths:
+  /health:
+    get:
+      summary: Sprawdzenie działania serwera
+      responses:
+        '200': { description: OK }
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Rejestracja konta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [imie, email, haslo]
+              properties:
+                imie: { type: string, example: Jan }
+                email: { type: string, format: email }
+                haslo: { type: string, minLength: 8, maxLength: 72 }
+      responses:
+        '201': { description: Konto utworzone, zwraca token i dane użytkownika, content: { application/json: { schema: { $ref: '#/components/schemas/AuthResponse' } } } }
+        '400': { $ref: '#/components/responses/BladWalidacji' }
+        '409': { description: Email zajęty }
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Logowanie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, haslo]
+              properties:
+                email: { type: string, format: email }
+                haslo: { type: string }
+      responses:
+        '200': { description: Zalogowano, content: { application/json: { schema: { $ref: '#/components/schemas/AuthResponse' } } } }
+        '400': { $ref: '#/components/responses/BladWalidacji' }
+        '401': { description: Nieprawidłowy email lub hasło }
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Dane zalogowanego użytkownika
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
+        '401': { description: Brak lub nieprawidłowy token }
+  /categories:
+    get:
+      tags: [Katalog]
+      summary: Lista kategorii
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Category' } } } } }
+  /bikes:
+    get:
+      tags: [Katalog]
+      summary: Lista rowerów (opcjonalnie filtr po kategorii i wyszukiwanie)
+      parameters:
+        - { name: kategoria, in: query, schema: { type: integer } }
+        - { name: q, in: query, description: Fraza szukana w nazwie lub marce, schema: { type: string } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Bike' } } } } }
+        '400': { $ref: '#/components/responses/BladWalidacji' }
+    post:
+      tags: [Katalog]
+      summary: Dodanie roweru (admin)
+      security: [{ bearerAuth: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/BikeInput' } } } }
+      responses:
+        '201': { description: Utworzono }
+        '400': { $ref: '#/components/responses/BladWalidacji' }
+        '401': { description: Brak tokenu }
+        '403': { description: Brak uprawnień }
+  /bikes/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: integer } }
+    get:
+      tags: [Katalog]
+      summary: Szczegóły roweru
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Bike' } } } }
+        '404': { description: Nie znaleziono }
+    put:
+      tags: [Katalog]
+      summary: Edycja roweru (admin)
+      security: [{ bearerAuth: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/BikeInput' } } } }
+      responses:
+        '200': { description: Zaktualizowano }
+        '400': { $ref: '#/components/responses/BladWalidacji' }
+        '403': { description: Brak uprawnień }
+        '404': { description: Nie znaleziono }
+    delete:
+      tags: [Katalog]
+      summary: Usunięcie roweru (admin)
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204': { description: Usunięto }
+        '403': { description: Brak uprawnień }
+        '404': { description: Nie znaleziono }
+        '409': { description: Rower występuje w zamówieniach }
+  /orders:
+    post:
+      tags: [Zamówienia]
+      summary: Złożenie zamówienia (zalogowany użytkownik). Ceny pobierane z bazy.
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [imie_nazwisko, adres, telefon, items]
+              properties:
+                imie_nazwisko: { type: string }
+                adres: { type: string }
+                telefon: { type: string }
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [rower_id, ilosc]
+                    properties:
+                      rower_id: { type: integer }
+                      ilosc: { type: integer, minimum: 1, maximum: 99 }
+      responses:
+        '201': { description: Zamówienie utworzone, content: { application/json: { schema: { type: object, properties: { id: { type: integer } } } } } }
+        '400': { $ref: '#/components/responses/BladWalidacji' }
+        '401': { description: Brak tokenu }
+    get:
+      tags: [Zamówienia]
+      summary: Wszystkie zamówienia (admin)
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+        '403': { description: Brak uprawnień }
+  /orders/my:
+    get:
+      tags: [Zamówienia]
+      summary: Zamówienia zalogowanego użytkownika
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+        '401': { description: Brak tokenu }
+  /orders/{id}/status:
+    patch:
+      tags: [Zamówienia]
+      summary: Zmiana statusu zamówienia (admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [nowe, w realizacji, wyslane, anulowane] }
+      responses:
+        '200': { description: Zaktualizowano }
+        '400': { $ref: '#/components/responses/BladWalidacji' }
+        '403': { description: Brak uprawnień }
+        '404': { description: Nie znaleziono }
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+  responses:
+    BladWalidacji:
+      description: Nieprawidłowe dane wejściowe
+      content: { application/json: { schema: { type: object, properties: { error: { type: string } } } } }
+  schemas:
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        imie: { type: string }
+        email: { type: string }
+        rola: { type: string, enum: [user, admin] }
+    AuthResponse:
+      type: object
+      properties:
+        token: { type: string }
+        user: { $ref: '#/components/schemas/User' }
+    Category:
+      type: object
+      properties:
+        id: { type: integer }
+        nazwa: { type: string }
+        opis: { type: string }
+    Bike:
+      type: object
+      properties:
+        id: { type: integer }
+        nazwa: { type: string }
+        marka: { type: string }
+        cena: { type: number }
+        kategoria_id: { type: integer }
+        zdjecie: { type: string, example: zdjecia/trek_fx3.jpg }
+    BikeInput:
+      type: object
+      required: [nazwa, marka, cena, kategoria_id]
+      properties:
+        nazwa: { type: string }
+        marka: { type: string }
+        cena: { type: number }
+        kategoria_id: { type: integer }
+        zdjecie: { type: string }

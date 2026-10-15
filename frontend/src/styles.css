@@ -1,0 +1,525 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; 
+}
+
+main {
+    flex: 1; 
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    width: 100%;
+}
+
+header {
+    background-color: #1a2a4f;
+    color: white;
+    padding: 20px 40px;
+    border-bottom: 3px solid #e63946;
+}
+
+.logo-koszyk {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.logo h1 {
+    font-size: 32px;
+    letter-spacing: 2px;
+    color: white;
+}
+
+.podtytul {
+    font-size: 14px;
+    color: #ccc;
+    margin-top: 5px;
+}
+
+.przycisk-koszyk {
+    background-color: #e63946;
+    color: white;
+    padding: 10px 25px;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    display: inline-block;
+}
+
+.przycisk-koszyk:hover {
+    background-color: #c1121f;
+}
+
+.przycisk-powrot {
+    background-color: #2c3e66;
+    color: white;
+    padding: 8px 20px;
+    text-decoration: none;
+    border-radius: 25px;
+    display: inline-block;
+}
+
+.przycisk-powrot:hover {
+    background-color: #1a2a4f;
+}
+
+.hero {
+    background: linear-gradient(135deg, #2c3e66 0%, #1a2a4f 100%);
+    color: white;
+    text-align: center;
+    padding: 80px 20px;
+    border-radius: 0 0 30px 30px;
+    margin-bottom: 40px;
+}
+
+.hero-tytul {
+    font-size: 52px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    line-height: 1.3;
+}
+
+.hero-tytul .bialy {
+    color: #ffffff;
+}
+
+.hero-tytul .czerwony {
+    color: #e63946;
+}
+
+.hero-opis {
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: #e0e0e0;
+}
+
+.przycisk-hero {
+    background-color: #e63946;
+    color: white;
+    padding: 14px 35px;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+.przycisk-hero:hover {
+    background-color: #c1121f;
+    transform: scale(1.05);
+}
+
+main h2 {
+    text-align: center;
+    color: #1a2a4f;
+    margin-bottom: 30px;
+    font-size: 32px;
+    position: relative;
+}
+
+main h2:after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    background-color: #e63946;
+    margin: 10px auto 0;
+}
+
+.sekcja-kategorii {
+    margin-bottom: 60px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    scroll-margin-top: 100px;
+}
+
+.tytul-kategorii {
+    text-align: center;
+    color: #1a2a4f;
+    margin-bottom: 10px;
+    font-size: 36px;
+    position: relative;
+}
+
+.tytul-kategorii:after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 4px;
+    background-color: #e63946;
+    margin: 15px auto 0;
+    border-radius: 2px;
+}
+
+.opis-kategorii {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+.rowery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+}
+
+.karta-roweru {
+    background-color: #f9f9f9;
+    border-radius: 20px;
+    padding: 25px;
+    width: 450px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border: 1px solid #eee;
+}
+
+.karta-roweru:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 35px rgba(0,0,0,0.15);
+}
+
+.karta-roweru img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 15px;
+    background-color: #f5f5f5;
+    margin-bottom: 15px;
+}
+
+.karta-roweru h3 {
+    font-size: 22px;
+    margin: 15px 0 8px;
+    color: #1a2a4f;
+}
+
+.marka {
+    font-weight: bold;
+    color: #e63946;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.cena {
+    font-size: 28px;
+    color: #1a2a4f;
+    font-weight: bold;
+    margin: 12px 0;
+}
+
+.przycisk-kup {
+    display: inline-block;
+    background-color: #e63946;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.przycisk-kup:hover {
+    background-color: #c1121f;
+}
+
+.przycisk {
+    display: inline-block;
+    background-color: #2c3e66;
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 30px;
+    transition: background-color 0.3s;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.przycisk:hover {
+    background-color: #1a2a4f;
+}
+
+.kategorie {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+}
+
+.karta-kategorii {
+    background-color: white;
+    border-radius: 15px;
+    padding: 30px 25px;
+    width: 300px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-top: 4px solid #e63946;
+}
+
+.karta-kategorii:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.karta-kategorii h3 {
+    font-size: 26px;
+    color: #1a2a4f;
+    margin-bottom: 12px;
+}
+
+.karta-kategorii p {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 18px;
+}
+
+.tabela-koszyka, .tabela-podsumowanie {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.tabela-koszyka th, .tabela-podsumowanie th {
+    background-color: #1a2a4f;
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-size: 16px;
+}
+
+.tabela-koszyka td, .tabela-podsumowanie td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.pole-ilosc {
+    width: 70px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 15px;
+}
+
+.przycisk-usun {
+    color: #e63946;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.przycisk-usun:hover {
+    text-decoration: underline;
+}
+
+.przyciski-koszyka {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.przycisk-zamow {
+    display: inline-block;
+    background-color: #e63946;
+    color: white;
+    padding: 14px 35px;
+    text-decoration: none;
+    border-radius: 40px;
+    margin-left: 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.przycisk-zamow:hover {
+    background-color: #c1121f;
+}
+
+.suma td {
+    background-color: #f8f9fa;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.suma td strong {
+    color: #1a2a4f;
+}
+
+.komunikat-sukces {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    text-align: center;
+    border-left: 5px solid #28a745;
+    font-size: 16px;
+}
+
+.komunikat-blad {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    border-left: 5px solid #e63946;
+    font-size: 16px;
+}
+
+.pusty-koszyk {
+    text-align: center;
+    padding: 60px;
+    background-color: white;
+    border-radius: 20px;
+}
+
+.pusty-koszyk p {
+    font-size: 20px;
+    margin-bottom: 25px;
+    color: #666;
+}
+
+.formularz-zamowienia {
+    max-width: 550px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.formularz-zamowienia h3 {
+    color: #1a2a4f;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 24px;
+}
+
+.formularz-zamowienia label {
+    display: block;
+    margin-top: 18px;
+    font-weight: bold;
+    color: #1a2a4f;
+    font-size: 15px;
+}
+
+.formularz-zamowienia input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.formularz-zamowienia input:focus {
+    outline: none;
+    border-color: #e63946;
+}
+
+.podsumowanie-zamowienia {
+    margin-bottom: 35px;
+    background-color: white;
+    padding: 25px;
+    border-radius: 20px;
+}
+
+.podsumowanie-zamowienia h3 {
+    color: #1a2a4f;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    background-color: #1a2a4f;
+    color: white;
+    border-top: 3px solid #e63946;
+    margin-top: auto; 
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+@media (max-width: 768px) {
+    .hero-tytul {
+        font-size: 36px;
+    }
+    
+    .hero-opis {
+        font-size: 16px;
+    }
+    
+    .logo-koszyk {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .tabela-koszyka, .tabela-podsumowanie {
+        font-size: 13px;
+    }
+    
+    .tabela-koszyka th, .tabela-koszyka td,
+    .tabela-podsumowanie th, .tabela-podsumowanie td {
+        padding: 10px;
+    }
+    
+    .przyciski-koszyka {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .przycisk-zamow {
+        margin-left: 0;
+    }
+    
+    .karta-roweru {
+        width: 100%;
+        max-width: 350px;
+    }
+    
+    .karta-roweru img {
+        height: 220px;
+    }
+    
+    .tytul-kategorii {
+        font-size: 28px;
+    }
+    
+    .sekcja-kategorii {
+        margin-bottom: 40px;
+        padding: 15px;
+    }
+}

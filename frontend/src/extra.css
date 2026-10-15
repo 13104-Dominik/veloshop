@@ -1,0 +1,16 @@
+/* Uzupełnienie stylów z poprzedniego projektu o nowe elementy (nawigacja, panel admina, wyszukiwarka) */
+a { color: inherit; text-decoration: none; }
+.logo a { color: white; }
+.nawigacja { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.nawigacja a { color: white; }
+.nawigacja a:hover { text-decoration: underline; }
+.nawigacja .przycisk-koszyk { text-decoration: none; }
+.uzytkownik { opacity: .8; }
+.wyszukiwarka { width: 100%; max-width: 420px; padding: 10px 14px; margin: 10px 0 20px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+.formularz-zamowienia select { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+.formularz-zamowienia button { margin-right: 8px; cursor: pointer; }
+.zakladki { display: flex; gap: 8px; margin-bottom: 16px; }
+.zakladki button { padding: 8px 18px; border: 1px solid #1a2a4f; background: white; color: #1a2a4f; border-radius: 6px; cursor: pointer; }
+.zakladki button.aktywna { background: #1a2a4f; color: white; }
+a.karta-kategorii { display: block; }
+.podsumowanie-zamowienia ul { margin: 8px 0 8px 20px; }

@@ -1,0 +1,26 @@
+# Uruchomienie całości lokalnie: docker compose up --build  ->  http://localhost:3000
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      retries: 20
+    volumes: [dbdata:/var/lib/mysql]
+  app:
+    build: .
+    ports: ["3000:3000"]
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: sklep_rowerowy
+      JWT_SECRET: zmien-mnie-na-dlugi-losowy-ciag
+      ADMIN_EMAIL: admin@veloshop.pl
+      ADMIN_PASSWORD: Admin123!
+volumes:
+  dbdata:
