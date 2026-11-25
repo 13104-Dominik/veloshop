@@ -44,13 +44,14 @@ Pełna dokumentacja projektowa w katalogu `docs/`: planowanie, SRS z diagramami 
 ```
 backend/   API (src/routes, src/middleware), db/schema.sql + seed.sql, openapi.yaml, tests/
 frontend/  aplikacja React (src/pages, src/components, src/context), testy w src/__tests__
-.github/workflows/ci.yml   CI/CD (testy, build, test integracyjny z MySQL, deploy hook)
+.github/workflows/ci.yml   CI/CD (testy, build, test integracyjny z MySQL, test dymny wdrożenia)
 Dockerfile, docker-compose.yml
 ```
 
-## Wdrożenie (Render)
-1. Wypchnij repozytorium na GitHub.
-2. Render -> New Web Service -> Docker, wskaż repo. Dodaj bazę MySQL (darmowy plan Aiven, Render ma tylko Postgres) i ustaw zmienne (w tym `DB_SSL=true`):
-   `DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, JWT_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD`.
-3. Skopiuj *Deploy Hook* z ustawień usługi do sekretu GitHub `RENDER_DEPLOY_HOOK` - każdy push na `main` po zielonym CI wdroży aplikację.
-4. Monitoring: endpoint `/api/health` (podepnij np. UptimeRobot) oraz logi w panelu Render.
+## Wdrożenie (SnapDeploy + Aiven)
+Aplikacja działa publicznie pod adresem: **https://veloshop-7a008.containers.snapdeploy.app/**
+1. Baza MySQL: darmowy plan Aiven (bez karty). Ustaw `DB_SSL=true`.
+2. SnapDeploy -> Deploy from GitHub -> repozytorium `veloshop`, gałąź `main`, port `3000` (używa `Dockerfile`). Zmienne środowiskowe:
+   `DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_SSL=true, JWT_SECRET` (oraz opcjonalnie `ADMIN_EMAIL, ADMIN_PASSWORD`).
+3. Włączone *Auto Deploy on Push*: każdy push na `main` buduje i wdraża aplikację (limit darmowego planu: 5 wdrożeń / 12 h).
+4. Monitoring: endpoint `/api/health` (podepnij np. UptimeRobot) oraz logi w panelu SnapDeploy. Darmowy kontener usypia się po bezczynności (pierwsze wejście trwa ok. minuty).

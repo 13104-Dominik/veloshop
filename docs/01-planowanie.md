@@ -31,7 +31,7 @@ Zespół fikcyjny, zgodnie z założeniem w opisie projektu (student jest lidere
 | Testy | Jest, Supertest, Testing Library, autocannon | Jeden framework dla front-endu i back-endu |
 | Kontrola wersji | Git + GitHub | Pull requesty, historia, CI |
 | CI/CD | GitHub Actions | Testy i wdrożenie po każdym pushu |
-| Hosting | Render (Docker) + zewnętrzna baza MySQL | Darmowy plan, wdrożenie z repozytorium |
+| Hosting | SnapDeploy (Docker) + zewnętrzna baza MySQL (Aiven) | Darmowy plan, wdrożenie z repozytorium |
 | Projektowanie | Draw.io / Mermaid (UML), Figma (makiety) | Zgodnie z propozycją |
 | Zarządzanie | Trello (tablica Kanban) | Podział zadań na zjazdy |
 

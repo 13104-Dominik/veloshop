@@ -56,26 +56,30 @@ flowchart LR
     A --> C[frontend: npm ci, npm test, build]
     B --> D[integration: MySQL 8, init-db, start API, test obciążeniowy]
     C --> D
-    D -->|tylko main| E[deploy: Render Deploy Hook]
+    D -->|tylko main| E[SnapDeploy: auto-deploy z GitHuba]
+    E --> F[test dymny /api/health]
 ```
-- Job `deploy` działa wyłącznie po pushu na `main` i tylko gdy wszystkie wcześniejsze joby są zielone.
-- Wymagany sekret repozytorium: `RENDER_DEPLOY_HOOK` (bez niego krok wdrożenia jest pomijany).
+- Wdrożenie realizuje SnapDeploy (*Auto Deploy on Push* dla gałęzi `main`): platforma sama buduje obraz z `Dockerfile` po każdym pushu. Brak dodatkowych sekretów w GitHubie.
+- Job `smoke` działa wyłącznie po pushu na `main` po zielonych testach i sprawdza, czy wdrożona aplikacja odpowiada na `/api/health` (nie blokuje CI).
+- Limit darmowego planu SnapDeploy: 5 wdrożeń na 12 godzin (nieudane budowania też się liczą), dlatego zmiany grupujemy w jednym pushu.
 
 ## 6.7 Wdrożenie
-1. Baza MySQL u dostawcy zewnętrznego. Render oferuje w darmowym planie tylko Postgres, więc MySQL bierzemy z Aiven (darmowy plan: 1 CPU, 1 GB RAM, 1 GB dysku, bez karty; usługa może być wyłączona po dłuższej nieaktywności). Zanotuj host, port, użytkownika i hasło z panelu Aiven i ustaw `DB_SSL=true`.
-2. Render: New -> Web Service -> repozytorium GitHub, środowisko **Docker** (używa `Dockerfile` z głównego katalogu).
-3. W ustawieniach usługi dodaj zmienne z tabeli 6.2 (zwłaszcza `DB_*`, `JWT_SECRET`, `ADMIN_PASSWORD`).
+1. Baza MySQL u dostawcy zewnętrznego: Aiven (darmowy plan: 1 CPU, 1 GB RAM, 1 GB dysku, bez karty; usługa wyłącza się po dłuższej nieaktywności i trzeba ją włączyć w panelu). Zanotuj host, port, użytkownika i hasło oraz ustaw `DB_SSL=true`.
+2. SnapDeploy: Deploy from GitHub -> repozytorium `veloshop`, gałąź `main`, port `3000`. Używany jest `Dockerfile` z głównego katalogu.
+3. W ustawieniach kontenera dodaj zmienne z tabeli 6.2 (zwłaszcza `DB_*`, `DB_SSL`, `JWT_SECRET`, `ADMIN_PASSWORD`).
 4. Pierwszy start wykona `init-db` (tworzy tabele, dane i admina, jeśli ich brak) i uruchomi serwer.
-5. Skopiuj *Deploy Hook* do sekretu `RENDER_DEPLOY_HOOK` w GitHub, aby kolejne wdrożenia były automatyczne.
+5. Włącz *Auto Deploy on Push*, aby kolejne wdrożenia następowały automatycznie po pushu na `main`.
 6. Alternatywa/awaryjnie: `docker compose up --build` na dowolnej maszynie.
+
+Adres wdrożonej aplikacji: **https://veloshop-7a008.containers.snapdeploy.app/**
 
 Weryfikacja po wdrożeniu: `GET /api/health` zwraca `{"status":"ok"}`, strona główna pokazuje kategorie, `/api/docs` pokazuje Swaggera.
 
 ## 6.8 Monitorowanie i obsługa błędów
 - `GET /api/health` podpięty pod zewnętrzny monitoring (np. UptimeRobot, interwał 5 min, powiadomienie e-mail).
-- Błędy serwera (500) są logowane na standardowe wyjście i dostępne w logach Render; klient dostaje ogólny komunikat bez szczegółów.
+- Błędy serwera (500) są logowane na standardowe wyjście i dostępne w logach SnapDeploy; klient dostaje ogólny komunikat bez szczegółów.
 - Typowe problemy: `ECONNREFUSED` (baza niedostępna, sprawdź `DB_*`), `Brak JWT_SECRET` (uzupełnij zmienną), 401 po czasie (token wygasł, zaloguj się ponownie), 429 (limit prób logowania).
-- Rollback: w panelu Render wybierz poprzednie wdrożenie ("Rollback").
+- Rollback: w panelu SnapDeploy wdróż ponownie poprzedni commit albo cofnij zmianę (`git revert`) i wypchnij na `main`.
 
 ## 6.9 Rozwój w przyszłości
 Odzyskiwanie hasła, płatności online, stany magazynowe, paginacja listy rowerów, upload zdjęć przez panel admina.

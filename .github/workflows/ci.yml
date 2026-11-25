@@ -63,15 +63,17 @@ jobs:
           test "$(curl -sf http://localhost:3000/api/bikes | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).length))')" -ge 36
           npm run test:load
 
-  deploy:
-    name: Wdrożenie (Render deploy hook)
+  # Wdrożenie: SnapDeploy ma włączone "Auto Deploy on Push" dla gałęzi main,
+  # więc po pushu platforma sama buduje obraz z Dockerfile i wdraża aplikację.
+  # Poniższy job sprawdza tylko, czy wdrożona aplikacja odpowiada (nie blokuje CI).
+  smoke:
+    name: Test dymny wdrożonej aplikacji
     runs-on: ubuntu-latest
     needs: [integration]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    continue-on-error: true
     steps:
-      - name: Wywołaj deploy hook
-        env:
-          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+      - name: Poczekaj na wdrożenie i sprawdź /api/health
         run: |
-          if [ -z "$HOOK" ]; then echo "Brak sekretu RENDER_DEPLOY_HOOK - pomijam wdrożenie"; exit 0; fi
-          curl -sf -X POST "$HOOK"
+          sleep 120
+          curl -sf --retry 6 --retry-delay 20 --retry-all-errors https://veloshop-7a008.containers.snapdeploy.app/api/health
