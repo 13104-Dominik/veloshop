@@ -11,6 +11,7 @@ export default function Bikes() {
   const [q, setQ] = useState('');
   const [error, setError] = useState('');
   const [added, setAdded] = useState('');
+  const [category, setCategory] = useState(null);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -22,6 +23,12 @@ export default function Bikes() {
     return () => clearTimeout(t);
   }, [id, q]);
 
+  useEffect(() => {
+    setCategory(null);
+    if (!id) return;
+    api('/categories').then((list) => setCategory(list.find((c) => String(c.id) === String(id)) || null)).catch(() => {});
+  }, [id]);
+
   const add = (bike) => {
     dispatch({ type: 'ADD', bike });
     setAdded(`Dodano do koszyka: ${bike.nazwa}`);
@@ -29,7 +36,7 @@ export default function Bikes() {
 
   return (
     <>
-      <h2>{id ? 'Rowery w kategorii' : 'Wszystkie rowery'}</h2>
+      <h2>{id ? `Rowery w kategorii${category ? `: ${category.nazwa}` : ''}` : 'Wszystkie rowery'}</h2>
       <input className="wyszukiwarka" placeholder="Szukaj po nazwie lub marce..." value={q} onChange={(e) => setQ(e.target.value)} aria-label="Szukaj" />
       {added && <p className="komunikat-sukces">{added}</p>}
       {error && <p className="komunikat-blad">{error}</p>}
